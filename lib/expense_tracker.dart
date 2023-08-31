@@ -12,8 +12,8 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('jasnmdckx'),
-        actions: [
+        title: const Text('jasnmdckx'),
+        actions: const [
           Icon(
             Icons.add,
           ),
@@ -28,7 +28,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
               color: Colors.pink,
             )),
             width: double.infinity,
-            child: Text('The chart ...'),
+            child: const Text('The chart ...'),
           ),
           Container(
             decoration: BoxDecoration(
@@ -37,7 +37,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
               color: Colors.green,
             )),
             width: double.infinity,
-            child: Text('The expenses ...'),
+            child: const Text('The expenses ...'),
           ),
         ],
       ),
