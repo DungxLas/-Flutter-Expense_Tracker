@@ -26,10 +26,18 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
     ),
   ];
 
+  void _addNewExpense(Expense newItem) {
+    setState(() {
+      _registeredExpenses.add(newItem);
+    });
+  }
+
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
       context: context,
-      builder: (ctx) => NewExpense(),
+      builder: (ctx) => NewExpense(
+        addNewExpense: _addNewExpense,
+      ),
     );
   }
 
@@ -41,7 +49,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
         actions: [
           IconButton(
             onPressed: _openAddExpenseOverlay,
-            icon: Icon(
+            icon: const Icon(
               Icons.add,
             ),
           ),
