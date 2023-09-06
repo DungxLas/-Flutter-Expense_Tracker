@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 final formatter = DateFormat.yMd();
 
 class NewExpense extends StatefulWidget {
-  final Function addNewExpense;
-  const NewExpense({super.key, required this.addNewExpense});
+  final void Function(Expense expense) onAddExpense;
+  const NewExpense({super.key, required this.onAddExpense});
 
   @override
   State<NewExpense> createState() => _NewExpenseState();
@@ -21,26 +21,48 @@ class _NewExpenseState extends State<NewExpense> {
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
-    final _pickedDate = await showDatePicker(
+    final pickedDate = await showDatePicker(
       context: context,
       initialDate: now,
       firstDate: firstDate,
       lastDate: now,
     );
     setState(() {
-      _selectedDate = _pickedDate;
+      _selectedDate = pickedDate;
     });
   }
 
-  void _saveExpense() {
-    var newExpense = Expense(
+  void _submitExpenseData() {
+    final enterAmount = double.tryParse(_amountController.text);
+    final amountIsInvalid = enterAmount == null || enterAmount <= 0;
+    if (_titleController.text.trim().isEmpty ||
+        amountIsInvalid ||
+        _selectedDate == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Invalid input'),
+          content: const Text(
+              'Please make sure a valid title, amount, date and category was entered'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text('Okay'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    widget.onAddExpense(Expense(
       category: _selectCategory,
       title: _titleController.text,
-      amount: double.parse(_amountController.text),
+      amount: enterAmount,
       date: _selectedDate!,
-    );
-
-    widget.addNewExpense(newExpense);
+    ));
 
     Navigator.pop(context);
   }
@@ -55,7 +77,7 @@ class _NewExpenseState extends State<NewExpense> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
       child: Column(
         children: [
           TextField(
@@ -134,7 +156,7 @@ class _NewExpenseState extends State<NewExpense> {
                 child: const Text('Cancel'),
               ),
               ElevatedButton(
-                onPressed: _saveExpense,
+                onPressed: _submitExpenseData,
                 child: const Text('Save Expense'),
               ),
             ],
